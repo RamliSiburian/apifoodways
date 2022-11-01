@@ -1,7 +1,9 @@
 package Handlers
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	productDto "foodways/Dto/Product"
 	Dto "foodways/Dto/Result"
 	"foodways/Models"
@@ -10,6 +12,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
@@ -35,7 +39,7 @@ func (h *handlerProduct) FindProducts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i, p := range products {
-		products[i].Image = os.Getenv("PATH_FILE_PRODUCT") + p.Image
+		products[i].Image = os.Getenv("PATH_FILE") + p.Image
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -58,7 +62,7 @@ func (h *handlerProduct) GetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i, p := range product {
-		product[i].Image = os.Getenv("PATH_FILE_PRODUCT") + p.Image
+		product[i].Image = os.Getenv("PATH_FILE") + p.Image
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -73,7 +77,7 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	userId := int(userInfo["id"].(float64))
 
 	dataUpload := r.Context().Value("dataFile")
-	filename := dataUpload.(string)
+	filepath := dataUpload.(string)
 
 	price, _ := strconv.Atoi(r.FormValue("price"))
 	qty, _ := strconv.Atoi(r.FormValue("qty"))
@@ -94,11 +98,22 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var ctx = context.Background()
+	var CLOUD_NAME = os.Getenv("CLOUD_NAME")
+	var API_KEY = os.Getenv("API_KEY")
+	var API_SECRET = os.Getenv("API_SECRET")
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+	resp, err := cld.Upload.Upload(ctx, filepath, uploader.UploadParams{Folder: "waysfood_file"})
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	product := Models.Product{
 		Name:   request.Name,
 		Desc:   request.Desc,
 		Price:  request.Price,
-		Image:  filename,
+		Image:  resp.SecureURL,
 		Qty:    request.Qty,
 		UserID: userId,
 	}
