@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@700&display=swap');
+
+.header,
+.navbar {
+    background-color: #FFC700;
+}
+
+a {
+    text-decoration: none;
+}
+
+.link {
+    background-color: #433434;
+    width: 100px;
+}
+
+.head-title p {
+    font-family: 'Abhaya Libre ExtraBold';
+    color: #433434;
+}
+
+.head-content p {
+    font-size: 13px;
+    text-align: justify;
+}
+
+.modal-title {
+    color: #FFC700;
+}
+
+.popular-item,
+.near-item,
+.detail-restaurant {
+    background-color: #fff;
+    min-width: 220px;
+}
+
+.detail p {
+    margin: 0;
+    font-weight: bold;
+    color: #613D2B;
+    ;
+}
+
+.detail span {
+    font-size: 13px;
+}
+
+.btn-edit {
+    display: block;
+    background-color: #433434;
+    color: #fff;
+    font-weight: bold;
+    width: 170px;
+}
+
+.chart-order .priceses {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chart-order p {
+    margin: 0;
+    padding: 0;
+}
+
+.chart-order .charts {
+    height: 120px;
+    border-bottom: 2px solid #433434;
+    border-top: 2px solid #433434;
+
+}
+
+.chart-order .chart-item {
+    height: 350px;
+    overflow: scroll;
+    scroll-behavior: smooth;
+}
+
+.income table tr th,
+.income table tr td {
+    padding: 10px;
+    border-bottom: 1px solid #433434 !important;
+}
+
+.btnincome {
+    background-color: red;
+}
+
+.profileImage {
+    max-width: 150px;
+}
