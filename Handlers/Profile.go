@@ -1,7 +1,9 @@
 package Handlers
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	profileDto "foodways/Dto/Profile"
 	Dto "foodways/Dto/Result"
 	"foodways/Models"
@@ -10,6 +12,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/gorilla/mux"
 )
 
@@ -52,7 +56,7 @@ func (h *handlerprofile) GetProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user.Image = os.Getenv("PATH_FILE_USERS") + user.Image
+	user.Image = os.Getenv("PATH_FILE") + user.Image
 
 	w.WriteHeader(http.StatusOK)
 	response := Dto.SuccessResult{Code: http.StatusOK, Data: user}
@@ -63,7 +67,7 @@ func (h *handlerprofile) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	userImage := r.Context().Value("dataFile")
-	filename := userImage.(string)
+	filepath := userImage.(string)
 
 	request := profileDto.UpdateProfileRequest{
 		Fullname: r.FormValue("fullname"),
@@ -80,6 +84,17 @@ func (h *handlerprofile) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+	var ctx = context.Background()
+	var CLOUD_NAME = os.Getenv("CLOUD_NAME")
+	var API_KEY = os.Getenv("API_KEY")
+	var API_SECRET = os.Getenv("API_SECRET")
+
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+	resp, err := cld.Upload.Upload(ctx, filepath, uploader.UploadParams{Folder: "waysfood_file/userImage"})
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	if request.Fullname != "" {
 		user.Fullname = request.Fullname
@@ -89,8 +104,8 @@ func (h *handlerprofile) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		user.Phone = request.Phone
 	}
 
-	if filename != "" {
-		user.Image = filename
+	if filepath != "" {
+		user.Image = resp.SecureURL
 
 	}
 

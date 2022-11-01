@@ -47,11 +47,11 @@ func UserImage(next http.HandlerFunc) http.HandlerFunc {
 
 		data := tempFile.Name()
 
-		filename := data[14:]
+		// filename := data[14:]
 		fmt.Println(data)
-		fmt.Println(filename)
+		// fmt.Println(filename)
 
-		ctx := context.WithValue(r.Context(), "dataFile", filename)
+		ctx := context.WithValue(r.Context(), "dataFile", data)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
