@@ -16,15 +16,15 @@ import (
 
 func main() {
 
-	Mysql.DatabaseInit()
-
-	Database.RunMigration()
-
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 	// fmt.Println(os.Getenv("PATH_FILE"))
+
+	Mysql.DatabaseInit()
+
+	Database.RunMigration()
 
 	r := mux.NewRouter()
 
