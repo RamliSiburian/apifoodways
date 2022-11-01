@@ -32,7 +32,7 @@ export const PopularList = () => {
                     {listproductuser?.map((item, key) => {
                         return (
                             item?.role === "Partner" && (
-                                <>
+                                <div key={key}>
                                     {
                                         profileslist?.map((profilemap, profile_index) => {
                                             return (
@@ -49,7 +49,7 @@ export const PopularList = () => {
                                             )
                                         })
                                     }
-                                </>
+                                </div>
                             )
                         )
                     })}
