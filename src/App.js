@@ -19,10 +19,11 @@ import EditProduct from './Pages/Edit-product';
 
 function App() {
     const [state, dispatch] = useContext(UserContext);
+    // console.log(state);
     const [isLoading, setIsLoading] = useState(true)
     const navigate = useNavigate()
 
-    console.log(isLoading); const checkUser = async () => {
+    const checkUser = async () => {
         if (localStorage.token) {
             setAuthToken(localStorage.token);
         }
@@ -40,7 +41,6 @@ function App() {
                 setIsLoading(false)
             }
         } catch (error) {
-            console.log(error.response.data.code);
             if (error.response.data.code === 401) {
                 // setIsLoading(false)
                 navigate("/")
@@ -66,8 +66,8 @@ function App() {
                 <Route exact path='/Home' element={<Home />} />
                 <Route exact path='/DetailResto' element={<DetailRestaurants />} />
                 {/* <Route exact path='/DetailResto/:resto' element={<DetailRestaurants />} /> */}
-                <Route exact path='/Profile/:id' element={<Profile />} />
-                <Route exact path='/EditProfile/:id' element={<EditProfile />} />
+                <Route exact path='/Profile' element={<Profile />} />
+                <Route exact path='/EditProfile' element={<EditProfile />} />
                 <Route exact path='/AddProduct' element={<AddProduk />} />
                 <Route exact path='/ListProduct' element={<ListProduct />} />
                 <Route exact path='/EditProduct/:id' element={<EditProduct />} />

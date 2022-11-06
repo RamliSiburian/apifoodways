@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Card, Container } from 'react-bootstrap';
 import { useQuery } from 'react-query';
 import { Link, useParams } from 'react-router-dom';
@@ -11,6 +11,7 @@ import { UserContext } from '../context/User-context';
 function DetailProduct() {
     const { user_id } = useParams();
     const [state, dispatch] = useContext(UserContext);
+    // const [data, setData] = useState();
 
     let { data: detailsProduct } = useQuery("detailsProductCache", async () => {
         const response = await API.get("/product/" + user_id);
@@ -22,13 +23,43 @@ function DetailProduct() {
         return response.data.data.fullname;
     });
 
-    function addChart(user_id, id, name, price) {
-        console.log("Seller_id : ", user_id);
-        console.log("Product_id : ", id);
-        console.log("product_name : ", name);
-        console.log("price : ", price);
-        console.log("Buyer_id : ", state.user.id);
+    const addChart = async (user_id, id) => {
+        try {
 
+            let data = {
+                seller_id: user_id,
+                buyer_id: state.user.id,
+                product_id: id,
+                qty: 1,
+            }
+            // const getChartQty =
+            // API.get("/GetChart/" + id)
+            // console.log("ini id chart", getChartQty);
+            const response = await API.get("/Chart/" + state.user.id)
+            return await API.post("/Chart", data)
+
+
+            const datas = response.data.data;
+            // console.log(datas);
+
+            // if (datas.length === 0) {
+            //     return await API.post("/Chart", data)
+            //     console.log("nulll");
+            // } else {
+            //     datas.map((item, index) => {
+            //         if (item.seller_id === user_id && item.buyer_id === state.user.id && item.product_id === id) {
+            //             // const getChartQty = API.get("/GetChart/" + item.id)
+            //             console.log(getChartQty);
+            //             console.log("kosong");
+            //             // return response = API.patch("/Chart/" + item.id, 7)
+
+            //         }
+            //     })
+            // }
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -49,7 +80,7 @@ function DetailProduct() {
                                     <Card.Text className='text-danger'>
                                         {rupiah.convert(item?.price)}
                                     </Card.Text>
-                                    <Button variant="warning" className='w-100' onClick={() => addChart(item?.user_id, item?.id, item?.name, item?.price)}>Add to chart</Button>
+                                    <Button variant="warning" className='w-100' onClick={() => addChart(item?.user_id, item?.id)}>Add to chart</Button>
                                 </Card.Body>
                             </Card>
                         </div>

@@ -5,6 +5,8 @@ import ItemImage from '../Assets/Image/Detail-restaurant/geprek.png';
 import * as Icon from 'react-icons/fa';
 import { CounterContext } from '../context/Data-counter';
 import GlobalForm from '../Components/Atoms/Global-form';
+import { useQuery } from 'react-query';
+import { API } from '../config/Api';
 
 function ChartOrder() {
     const [dataCounter, setDataCounter] = useContext(CounterContext);
@@ -38,6 +40,17 @@ function ChartOrder() {
 
     }
 
+    let { data: chartOrder } = useQuery("chartOrderCache", async () => {
+        const response = await API.get("Charts")
+        // console.log(response.data.data[1].product.name);
+        return response.data.data
+    })
+
+    let { data: dataproduct } = useQuery("dataProductCache", async () => {
+        const response = await API.get("/products")
+        // console.log(response.data.data);
+        return response.data.data
+    })
 
 
 
@@ -64,28 +77,41 @@ function ChartOrder() {
                     </div>
                     <p className='fw-bold fs-6 mb-3 mt-5'>Review Your Order</p>
                     <div className="chart d-md-flex gap-5">
+                        {/* =============================== */}
                         <div className="chart-item w-100">
-                            <div className="charts items d-md-flex gap-3 align-items-center">
-                                <div className="image">
-                                    <img src={ItemImage} alt="geprek" width="150px" className='rounded' />
-                                </div>
-                                <div className="detail d-flex justify-content-between w-100 h-100 p-2">
-                                    <div className="d-flex flex-column justify-content-center">
-                                        <p>Paket Geprek</p>
-                                        <p>
-                                            <span><Icon.FaMinus onClick={() => LessUser()}></Icon.FaMinus> </span>
-                                            <span className='ms-2 me-2 fs-5'> {dataCounter.counter.length} </span>
-                                            <span><Icon.FaPlus onClick={() => AddUser()}></Icon.FaPlus> </span>
-                                        </p>
-                                    </div>
-                                    <div className="temporary-price">
-                                        <p className='text-danger'>Rp 15.000</p>
-                                        <Icon.FaTrashAlt onClick={() => LessAll()}></Icon.FaTrashAlt>
-                                    </div>
-                                </div>
-                            </div>
-
+                            {
+                                chartOrder?.map((item, index) => {
+                                    return (
+                                        dataproduct?.map((productItem, key) => {
+                                            return (
+                                                item.product_id === productItem.id && (
+                                                    <div className="charts items d-md-flex gap-3 align-items-center">
+                                                        <div className="image">
+                                                            <img src={productItem.image} alt="geprek" width="150px" className='rounded' />
+                                                        </div>
+                                                        <div className="detail d-flex justify-content-between w-100 h-100 p-2">
+                                                            <div className="d-flex flex-column justify-content-center">
+                                                                <p>{productItem.name}</p>
+                                                                <p>
+                                                                    <span><Icon.FaMinus onClick={() => LessUser()}></Icon.FaMinus> </span>
+                                                                    <span className='ms-2 me-2 fs-5'> {item.qty} </span>
+                                                                    <span><Icon.FaPlus onClick={() => AddUser()}></Icon.FaPlus> </span>
+                                                                </p>
+                                                            </div>
+                                                            <div className="temporary-price">
+                                                                <p className='text-danger'>{productItem.price}</p>
+                                                                <Icon.FaTrashAlt onClick={() => LessAll()}></Icon.FaTrashAlt>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            )
+                                        })
+                                    )
+                                })
+                            }
                         </div>
+                        {/* =================================== */}
                         <div className="chart-price w-100">
                             <div className="charts ">
                                 <div className="sub-total priceses">

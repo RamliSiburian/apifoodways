@@ -15,10 +15,10 @@ function EditProfile() {
     const [preview, setPreview] = useState(null);
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
-    const { id } = useParams();
+    // const { id } = useParams();
 
     let { data: profile } = useQuery("profileEditCache", async () => {
-        const response = await API.get("/Profile/" + id);
+        const response = await API.get("/Profile/" + state.user.id);
         return response.data.data;
     })
 
@@ -78,13 +78,13 @@ function EditProfile() {
                         Profile has been Updated
                     </Alert>
                 )
-                setMessage(alert);
+                setMessage(alert); 
             }
             setPreview(null);
             const timer = setTimeout(navigates, 1000);
 
             function navigates() {
-                navigate(`/Profile/${id}`);
+                navigate(`/Profile`);
             }
 
 
@@ -98,7 +98,7 @@ function EditProfile() {
         <>
             <Container>
                 <div className="Edit-profile mt-5 d-md-flex align-items-center">
-                    <p className="fs-5 fw-bold me-3"><Link to={`/Profile/${id}`} className="text-danger"><Icon.FaArrowLeft /> Back |</Link> </p>
+                    <p className="fs-5 fw-bold me-3"><Link to={`/Profile`} className="text-danger"><Icon.FaArrowLeft /> Back |</Link> </p>
                     {state.user.role === "Partner" ? (
                         <p className='fs-3 fw-bold'>Edit Profile Partner</p>
                     ) : (

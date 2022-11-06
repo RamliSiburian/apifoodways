@@ -1,29 +1,48 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import Login from '../Pages/Login';
 import Register from '../Pages/Register';
 import GlobalButton from './Atoms/Global-button';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CounterContext } from '../context/Data-counter'
-import Image from '../Assets/Image/User/orang.png';
 import * as Icon from "react-icons/fa";
 import { UserContext } from '../context/User-context';
 import { useMutation, useQuery } from 'react-query';
 import { API } from '../config/Api';
+import NoImage from '../Assets/Image/User/noimage.png';
 
 function Header() {
+    const navigate = useNavigate();
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const [state, dispatch] = useContext(UserContext);
     const [dataCounter, setDataCounter] = useContext(CounterContext);
+    const [profile, setProfile] = useState(null)
+
+    const getProfile = async () => {
+        try {
+            const response = await API.get("/Profile/" + state.user?.id);
+            setProfile(response.data.data)
+        } catch (error) {
+            // console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        if (state.user) {
+            getProfile();
+        }
+    }, [state])
 
     function Logout() {
         dispatch({
             type: "AUTH_ERROR",
         });
+        navigate("/");
         setShowLogin(true);
     }
+
     return (
         <>
             <Navbar expand="lg" sticky="top" className="navbar" >
@@ -46,18 +65,18 @@ function Header() {
                                         </span>
                                         <Icon.FaCartArrowDown className='fs-1 me-3' />
                                     </Link>
-                                    <img src={Image} alt="Me" className="dropdown dropdown-toggle" data-bs-toggle="dropdown"
-                                    />
+                                    <img src={profile?.image} alt="Me" className="dropdown dropdown-toggle rounded-circle" data-bs-toggle="dropdown"
+                                        style={{ width: "60px", height: "60px" }} />
                                     <ul className="dropdown-menu">
-                                        <li><Link className="dropdown-item" to={`/Profile/${state?.user.id}`}><Icon.FaUserAlt className='me-2' /> Profile</Link></li>
+                                        <li><Link className="dropdown-item" to={`/Profile`}><Icon.FaUserAlt className='me-2' /> Profile</Link></li>
                                         <li className='dropdown-item' onClick={Logout} style={{ cursor: "pointer" }} ><Icon.FaSignOutAlt className='me-2' /> Logout</li>
                                     </ul>
                                 </div>
                             ) : (
                                 <div className="dropdown" >
-                                    <img src={Image} alt="Me" className="dropdown dropdown-toggle" data-bs-toggle="dropdown" />
+                                    <img src={profile?.image} alt="Me" className="dropdown dropdown-toggle rounded-circle" data-bs-toggle="dropdown" style={{ width: "60px", height: "60px" }} />
                                     <ul className="dropdown-menu" style={{ marginLeft: "-50px" }}>
-                                        <li><Link className="dropdown-item" to={`/Profile/${state?.user.id}`} ><Icon.FaUserAlt className='me-2' /> Profile Partner</Link></li>
+                                        <li><Link className="dropdown-item" to={`/Profile`} ><Icon.FaUserAlt className='me-2' /> Profile Partner</Link></li>
                                         <li><Link className="dropdown-item" to="/AddProduct"><Icon.FaHamburger className='me-2' /> Add Product</Link> </li>
                                         <li><Link className="dropdown-item" to="/ListProduct"><Icon.FaListAlt className='me-2' /> List Product</Link> </li>
                                         <li className='dropdown-item' onClick={Logout} style={{ cursor: "pointer" }} ><Icon.FaSignOutAlt className='me-2' /> Logout</li>

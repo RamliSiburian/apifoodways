@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../Assets/styles/style.css';
 import { Container } from 'react-bootstrap';
 import WaysFood from '../Assets/Image/Icon.png';
@@ -14,16 +14,25 @@ function Profile() {
     document.title = "Foodways | " + title;
 
     const navigate = useNavigate();
-    const { id } = useParams();
+    // const { id } = useParams();
     const [state, dispatch] = useContext(UserContext);
+    const [profile, setProfile] = useState(null)
 
-    let { data: profiles } = useQuery("profilechaches", async () => {
-        const response = await API.get("/Profile/" + id);
-        return response.data.data;
-        // const email = response.data.data.user.email;
 
-    })
-    // console.log(profiles.image);
+    const getProfile = async () => {
+        try {
+            const response = await API.get("/Profile/" + state.user?.id);
+            setProfile(response.data.data)
+        } catch (error) {
+            // console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        if (state.user) {
+            getProfile();
+        }
+    }, [state])
     return (
         <>
             <Container>
@@ -33,7 +42,7 @@ function Profile() {
                         <hr />
                         <div className="d-flex mt-3">
                             <div className="img me-4">
-                                <img src={profiles?.image} alt="No image found" className='rounded profileImage' />
+                                <img src={profile?.image} alt="No image found" className='rounded profileImage' />
                             </div>
                             <div className="detail">
                                 <div className="email">
@@ -42,15 +51,15 @@ function Profile() {
                                 </div>
                                 <div className="name">
                                     <p>Full Name</p>
-                                    <span>-{profiles?.fullname}</span>
+                                    <span>-{profile?.fullname}</span>
                                 </div>
                                 <div className="phone">
                                     <p>Phone</p>
-                                    <span>-{profiles?.phone}</span>
+                                    <span>-{profile?.phone}</span>
                                 </div>
                             </div>
                         </div>
-                        <Link to={`/EditProfile/${profiles?.id}`} className='btn-edit text-white fw-bold mt-3 p-2 rounded text-center'> Edit Profile</Link>
+                        <Link to={`/EditProfile`} className='btn-edit text-white fw-bold mt-3 p-2 rounded text-center'> Edit Profile</Link>
                     </div>
 
                     {state.user.role === "Partner" ? (<div className="right w-100 mt-5 mt-md-0">
