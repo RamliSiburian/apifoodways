@@ -3,6 +3,7 @@ module foodways
 go 1.19
 
 require (
+	github.com/cloudinary/cloudinary-go v1.7.0
 	github.com/cloudinary/cloudinary-go/v2 v2.2.0
 	github.com/go-playground/validator/v10 v10.11.1
 	github.com/golang-jwt/jwt/v4 v4.4.2

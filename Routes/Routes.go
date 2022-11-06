@@ -9,4 +9,5 @@ func RounteInit(r *mux.Router) {
 	AuthRoutes(r)
 	ProfileRoutes(r)
 	ProductRoutes(r)
+	ChartRoutes(r)
 }

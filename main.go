@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"foodways/Database"
 	"foodways/Pkg/Mysql"
 	"foodways/Routes"
@@ -39,7 +38,6 @@ func main() {
 
 	// var port = "5000"
 	var port = os.Getenv("PORT")
-	fmt.Println("server running :" + port)
 
 	http.ListenAndServe(":"+port, handlers.CORS(AllowedHeaders, AllowedMethods, AllowedOrigins)(r))
 }

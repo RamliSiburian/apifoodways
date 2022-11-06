@@ -11,6 +11,9 @@ import (
 func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		file, _, err := r.FormFile("image")
+		if r.Method == "PATCH" && file == nil {
+			next.ServeHTTP(w, r)
+		}
 
 		if err != nil {
 			fmt.Println(err)

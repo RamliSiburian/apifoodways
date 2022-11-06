@@ -12,6 +12,7 @@ import (
 	"os"
 	"strconv"
 
+	// "github.com/cloudinary/cloudinary-go"
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/gorilla/mux"
@@ -36,7 +37,7 @@ func (h *handlerprofile) FindProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for i, p := range user {
-		user[i].Image = os.Getenv("PATH_FILE_USERS") + p.Image
+		user[i].Image = os.Getenv("PATH_FILE") + p.Image
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -56,6 +57,7 @@ func (h *handlerprofile) GetProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// user.Image = os.Getenv("PATH_FILE_USERS") + user.Image
 	user.Image = os.Getenv("PATH_FILE") + user.Image
 
 	w.WriteHeader(http.StatusOK)
@@ -66,8 +68,13 @@ func (h *handlerprofile) GetProfile(w http.ResponseWriter, r *http.Request) {
 func (h *handlerprofile) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	filepath := ""
 	userImage := r.Context().Value("dataFile")
-	filepath := userImage.(string)
+	if userImage != nil {
+		filepath = userImage.(string)
+	}
+
+	// if (filepath )
 
 	request := profileDto.UpdateProfileRequest{
 		Fullname: r.FormValue("fullname"),
@@ -115,7 +122,6 @@ func (h *handlerprofile) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	if request.Location != "" {
 		user.Location = request.Location
-
 	}
 
 	data, err := h.ProfileRepository.UpdateProfile(user)

@@ -39,6 +39,7 @@ func (h *handlerProduct) FindProducts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i, p := range products {
+		// products[i].Image = os.Getenv("PATH_FILE_PRODUC") + p.Image
 		products[i].Image = os.Getenv("PATH_FILE") + p.Image
 	}
 
@@ -62,6 +63,7 @@ func (h *handlerProduct) GetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i, p := range product {
+		// product[i].Image = os.Getenv("PATH_FILE_PRODUCT") + p.Image
 		product[i].Image = os.Getenv("PATH_FILE") + p.Image
 	}
 

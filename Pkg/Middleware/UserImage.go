@@ -11,6 +11,9 @@ import (
 func UserImage(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		file, _, err := r.FormFile("image")
+		if r.Method == "PATCH" && file == nil {
+			next.ServeHTTP(w, r)
+		}
 
 		if err != nil {
 			fmt.Println(err)
@@ -29,7 +32,7 @@ func UserImage(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		tempFile, err := ioutil.TempFile("uploads/users", "image-*.png")
+		tempFile, err := ioutil.TempFile("uploads", "image-*.png")
 		if err != nil {
 			fmt.Println(err)
 			fmt.Println("path upload error")
