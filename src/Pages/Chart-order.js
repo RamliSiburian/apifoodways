@@ -7,9 +7,11 @@ import { CounterContext } from '../context/Data-counter';
 import GlobalForm from '../Components/Atoms/Global-form';
 import { useQuery } from 'react-query';
 import { API } from '../config/Api';
+import { UserContext } from '../context/User-context';
 
 function ChartOrder() {
     const [dataCounter, setDataCounter] = useContext(CounterContext);
+    const [state, setState] = useContext(UserContext)
 
     function AddUser(item) {
         let newData = dataCounter.counter;
@@ -42,7 +44,7 @@ function ChartOrder() {
 
     let { data: chartOrder } = useQuery("chartOrderCache", async () => {
         const response = await API.get("/Chart/" + state.user.id)
-        // console.log(response.data.data[1].product.name);
+        // console.log(response.data.data);
         return response.data.data
     })
 
