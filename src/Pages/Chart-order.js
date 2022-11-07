@@ -41,7 +41,7 @@ function ChartOrder() {
     }
 
     let { data: chartOrder } = useQuery("chartOrderCache", async () => {
-        const response = await API.get("Charts")
+        const response = await API.get("/Chart/" + state.user.id)
         // console.log(response.data.data[1].product.name);
         return response.data.data
     })
