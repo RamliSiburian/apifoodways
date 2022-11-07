@@ -65,3 +65,4 @@ func (r *chart) DeleteChart(chart Models.Chart) (Models.Chart, error) {
 
 	return chart, err
 }
+ 

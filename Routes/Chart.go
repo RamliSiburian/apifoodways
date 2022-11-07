@@ -20,3 +20,4 @@ func ChartRoutes(r *mux.Router) {
 	r.HandleFunc("/Chart/{id}", h.DeleteChart).Methods("DELETE")
 
 }
+ 
